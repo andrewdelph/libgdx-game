@@ -10,6 +10,7 @@ import core.app.screen.GameScreen;
 import core.configuration.StandAloneConfig;
 
 public class AndroidLauncher extends AndroidApplication {
+
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
@@ -17,8 +18,6 @@ public class AndroidLauncher extends AndroidApplication {
     //    PhysicsTest2 physicsTest = new PhysicsTest2();
 
     Injector injector = Guice.createInjector(new StandAloneConfig());
-
-    Guice.createInjector(new StandAloneConfig());
 
     GameScreen gameScreen = injector.getInstance(GameScreen.class);
 
