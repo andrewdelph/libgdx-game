@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.google.inject.Inject;
 import core.common.GameSettings;
 import core.common.events.types.EventType;
+import core.common.javautil.MyConsumer;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -11,19 +12,18 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.function.Consumer;
 
 public class EventService {
 
-  Map<String, List<Consumer<EventType>>> eventListeners = new HashMap<>();
-  Map<String, List<Consumer<EventType>>> eventPostUpdateListeners = new HashMap<>();
+  Map<String, List<MyConsumer<EventType>>> eventListeners = new HashMap<>();
+  Map<String, List<MyConsumer<EventType>>> eventPostUpdateListeners = new HashMap<>();
   ConcurrentLinkedQueue<EventType> postUpdateQueue = new ConcurrentLinkedQueue<>();
   ExecutorService executorService = Executors.newCachedThreadPool();
 
   @Inject
   public EventService() {}
 
-  public void addListener(String type, Consumer<EventType> eventConsumer) {
+  public void addListener(String type, MyConsumer<EventType> eventConsumer) {
     this.eventListeners.computeIfAbsent(type, k -> new ArrayList<>());
     this.eventListeners.get(type).add(eventConsumer);
   }
@@ -54,7 +54,7 @@ public class EventService {
         });
   }
 
-  public void addPostUpdateListener(String type, Consumer<EventType> eventConsumer) {
+  public void addPostUpdateListener(String type, MyConsumer<EventType> eventConsumer) {
     this.eventPostUpdateListeners.computeIfAbsent(type, k -> new ArrayList<>());
     this.eventPostUpdateListeners.get(type).add(eventConsumer);
   }

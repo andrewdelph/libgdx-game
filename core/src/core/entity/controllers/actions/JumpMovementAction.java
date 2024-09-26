@@ -7,7 +7,6 @@ import core.chunk.world.exceptions.BodyNotFound;
 import core.common.exceptions.ChunkNotFound;
 import core.entity.Entity;
 import core.entity.collision.ground.EntityGroundContact;
-import java.util.function.Consumer;
 
 public class JumpMovementAction implements EntityAction {
 
@@ -24,7 +23,7 @@ public class JumpMovementAction implements EntityAction {
   }
 
   @Override
-  public Consumer<Body> applyBodyConsumer() {
+  public MyConsumer<Body> applyBodyConsumer() {
     return (Body body) -> {
       body.setLinearVelocity(new Vector2(0, 9));
     };

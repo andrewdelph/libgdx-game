@@ -14,9 +14,8 @@ import core.networking.events.types.incoming.UpdateEntityIncomingEventType;
 import core.networking.events.types.outgoing.UpdateEntityOutgoingEventType;
 import core.networking.server.ServerNetworkHandle;
 import core.networking.translation.NetworkDataDeserializer;
-import java.util.function.Consumer;
 
-public class UpdateEntityIncomingConsumerServer implements Consumer<EventType> {
+public class UpdateEntityIncomingConsumerServer implements MyConsumer<EventType> {
 
   @Inject NetworkDataDeserializer entitySerializationConverter;
   @Inject ServerNetworkHandle serverNetworkHandle;
@@ -46,7 +45,9 @@ public class UpdateEntityIncomingConsumerServer implements Consumer<EventType> {
             incoming.getAttributeList(), incoming.getChunkRange(), entity.getUuid());
 
     for (UserID userID : activeChunkManager.getChunkRangeUsers(outgoing.getChunkRange())) {
-      if (userID.equals(incoming.getUserID())) continue;
+      if (userID.equals(incoming.getUserID())) {
+        continue;
+      }
       serverNetworkHandle.send(userID, outgoing.toNetworkEvent());
     }
   }

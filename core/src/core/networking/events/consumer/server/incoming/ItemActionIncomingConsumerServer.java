@@ -5,9 +5,8 @@ import core.common.events.types.EventType;
 import core.common.events.types.ItemActionEventType;
 import core.common.exceptions.EntityNotFound;
 import core.entity.attributes.inventory.item.comsumers.ItemActionService;
-import java.util.function.Consumer;
 
-public class ItemActionIncomingConsumerServer implements Consumer<EventType> {
+public class ItemActionIncomingConsumerServer implements MyConsumer<EventType> {
 
   @Inject ItemActionService itemActionService;
 

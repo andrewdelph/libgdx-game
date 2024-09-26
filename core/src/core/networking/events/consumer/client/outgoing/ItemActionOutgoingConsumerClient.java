@@ -5,9 +5,8 @@ import core.common.events.types.EventType;
 import core.common.events.types.ItemActionEventType;
 import core.entity.attributes.inventory.item.comsumers.ItemActionService;
 import core.networking.client.ClientNetworkHandle;
-import java.util.function.Consumer;
 
-public class ItemActionOutgoingConsumerClient implements Consumer<EventType> {
+public class ItemActionOutgoingConsumerClient implements MyConsumer<EventType> {
 
   @Inject ClientNetworkHandle clientNetworkHandle;
   @Inject ItemActionService itemActionService;
@@ -17,7 +16,9 @@ public class ItemActionOutgoingConsumerClient implements Consumer<EventType> {
     ItemActionEventType realEvent = (ItemActionEventType) eventType;
 
     Boolean gcd = itemActionService.checkTriggerGCD(realEvent.getControleeUUID());
-    if (!gcd) return;
+    if (!gcd) {
+      return;
+    }
 
     clientNetworkHandle.send(realEvent.toNetworkEvent());
   }

@@ -2,6 +2,8 @@ package core.chunk;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.physics.box2d.World;
+import com.google.common.base.Predicate;
+import com.google.common.collect.Collections2;
 import core.app.game.GameController;
 import core.chunk.world.WorldWrapper;
 import core.chunk.world.exceptions.BodyNotFound;
@@ -15,22 +17,24 @@ import core.common.GameStore;
 import core.common.Tick;
 import core.common.exceptions.ChunkNotFound;
 import core.common.exceptions.EntityNotFound;
+import core.common.javautil.MyConsumer;
 import core.entity.Entity;
 import core.entity.block.SolidBlock;
 import core.entity.collision.EntityContactListenerFactory;
 import core.entity.misc.Ladder;
 import core.entity.misc.Turret;
 import core.networking.events.interfaces.SerializeNetworkData;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
 import networking.NetworkObjects;
 import networking.NetworkObjects.NetworkData;
+import org.checkerframework.checker.nullness.compatqual.NullableDecl;
 
 public class Chunk implements Callable<Chunk>, SerializeNetworkData {
 
@@ -47,7 +51,7 @@ public class Chunk implements Callable<Chunk>, SerializeNetworkData {
       Clock clock,
       GameStore gameStore,
       GameController gameController,
-      EntityContactListenerFactory entityContactListenerFactory,
+      final EntityContactListenerFactory entityContactListenerFactory,
       ChunkRange chunkRange) {
     this.gameStore = gameStore;
     this.gameController = gameController;
@@ -56,8 +60,12 @@ public class Chunk implements Callable<Chunk>, SerializeNetworkData {
     this.nextTick(1);
     this.worldWrapper = new WorldWrapper(chunkRange);
     this.worldWrapper.applyWorld(
-        (World world) ->
-            world.setContactListener(entityContactListenerFactory.createEntityContactListener()));
+        new MyConsumer<World>() {
+          @Override
+          public void accept(World world) {
+            world.setContactListener(entityContactListenerFactory.createEntityContactListener());
+          }
+        });
   }
 
   public WorldWrapper getWorldWrapper() {
@@ -101,7 +109,9 @@ public class Chunk implements Callable<Chunk>, SerializeNetworkData {
 
   public synchronized boolean addBody(Entity entity) {
     synchronized (worldWrapper) {
-      if (worldWrapper.hasBody(entity)) return false;
+      if (worldWrapper.hasBody(entity)) {
+        return false;
+      }
       worldWrapper.addEntity(entity.addWorld(this));
     }
     return true;
@@ -115,7 +125,9 @@ public class Chunk implements Callable<Chunk>, SerializeNetworkData {
 
   public Entity getEntity(UUID uuid) throws EntityNotFound {
     Entity toReturn = this.chunkMap.get(uuid);
-    if (toReturn == null) throw new EntityNotFound("Entity not found in chunk #UUID " + uuid);
+    if (toReturn == null) {
+      throw new EntityNotFound("Entity not found in chunk #UUID " + uuid);
+    }
     return this.chunkMap.get(uuid);
   }
 
@@ -137,7 +149,16 @@ public class Chunk implements Callable<Chunk>, SerializeNetworkData {
     neighborChunkList.add(this.gameStore.getChunk(this.chunkRange.getLeft().getDown()));
     neighborChunkList.add(this.gameStore.getChunk(this.chunkRange.getRight().getUp()));
     neighborChunkList.add(this.gameStore.getChunk(this.chunkRange.getRight().getDown()));
-    neighborChunkList.removeIf(Objects::isNull);
+    neighborChunkList =
+        new ArrayList<>(
+            Collections2.filter(
+                neighborChunkList,
+                new Predicate<Chunk>() {
+                  @Override
+                  public boolean apply(@NullableDecl Chunk input) {
+                    return input != null;
+                  }
+                }));
     return neighborChunkList;
   }
 
@@ -158,7 +179,9 @@ public class Chunk implements Callable<Chunk>, SerializeNetworkData {
             .getUp();
 
     for (Chunk neighbor : getNeighborChunks()) {
-      if (neighbor == null) continue;
+      if (neighbor == null) {
+        continue;
+      }
       currentNeighborEntitySet.addAll(
           neighbor.getEntityInRange(neighborBottomLeft, neighborTopRight));
     }
@@ -180,7 +203,9 @@ public class Chunk implements Callable<Chunk>, SerializeNetworkData {
     // remove temp entity from set
     for (Entity entity : entityToRemoveSet) {
       neighborEntitySet.remove(entity);
-      if (!worldWrapper.hasBody(entity)) continue;
+      if (!worldWrapper.hasBody(entity)) {
+        continue;
+      }
       try {
         worldWrapper.destroyEntity(entity);
       } catch (DestroyBodyException e) {
@@ -205,7 +230,9 @@ public class Chunk implements Callable<Chunk>, SerializeNetworkData {
     int tickTimeout = Integer.MAX_VALUE;
 
     for (Entity entity : this.chunkMap.values()) {
-      if (entity.getEntityController() == null) continue;
+      if (entity.getEntityController() == null) {
+        continue;
+      }
       entity.getEntityController().beforeWorldUpdate();
       try {
         this.gameStore.syncEntity(entity);
@@ -217,7 +244,9 @@ public class Chunk implements Callable<Chunk>, SerializeNetworkData {
     worldWrapper.tick();
 
     for (Entity entity : this.chunkMap.values()) {
-      if (entity.getEntityController() != null) entity.getEntityController().afterWorldUpdate();
+      if (entity.getEntityController() != null) {
+        entity.getEntityController().afterWorldUpdate();
+      }
 
       int entityTick = entity.getUpdateTimeout();
       if (entityTick < tickTimeout) {
@@ -293,7 +322,9 @@ public class Chunk implements Callable<Chunk>, SerializeNetworkData {
     NetworkObjects.NetworkData.Builder networkDataBuilder = NetworkObjects.NetworkData.newBuilder();
     for (Entity entity : this.getEntityList()) {
       NetworkData networkData = entity.toNetworkData();
-      if (networkData == null) continue;
+      if (networkData == null) {
+        continue;
+      }
       networkDataBuilder.addChildren(entity.toNetworkData());
     }
     networkDataBuilder.addChildren(this.chunkRange.toNetworkData());
@@ -308,7 +339,9 @@ public class Chunk implements Callable<Chunk>, SerializeNetworkData {
       return false;
     }
     Chunk other = (Chunk) anObject;
-    if (!this.chunkRange.equals(other.chunkRange)) return false;
+    if (!this.chunkRange.equals(other.chunkRange)) {
+      return false;
+    }
 
     return this.getEntityUUIDSet().equals(other.getEntityUUIDSet());
   }

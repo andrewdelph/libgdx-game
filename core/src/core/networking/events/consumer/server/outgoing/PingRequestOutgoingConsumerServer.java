@@ -5,9 +5,8 @@ import core.common.events.types.EventType;
 import core.networking.events.types.outgoing.PingRequestOutgoingEventType;
 import core.networking.server.ServerNetworkHandle;
 import core.networking.translation.NetworkDataSerializer;
-import java.util.function.Consumer;
 
-public class PingRequestOutgoingConsumerServer implements Consumer<EventType> {
+public class PingRequestOutgoingConsumerServer implements MyConsumer<EventType> {
 
   @Inject ServerNetworkHandle serverNetworkHandle;
 

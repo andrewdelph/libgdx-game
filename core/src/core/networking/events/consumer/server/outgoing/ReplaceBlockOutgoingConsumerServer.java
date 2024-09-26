@@ -7,9 +7,8 @@ import core.common.events.EventService;
 import core.common.events.types.EventType;
 import core.networking.events.types.outgoing.ReplaceBlockOutgoingEventType;
 import core.networking.server.ServerNetworkHandle;
-import java.util.function.Consumer;
 
-public class ReplaceBlockOutgoingConsumerServer implements Consumer<EventType> {
+public class ReplaceBlockOutgoingConsumerServer implements MyConsumer<EventType> {
 
   @Inject EventService eventService;
   @Inject ActiveChunkManager activeChunkManager;

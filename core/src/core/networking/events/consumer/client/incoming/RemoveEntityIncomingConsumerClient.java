@@ -8,9 +8,8 @@ import core.common.GameSettings;
 import core.common.events.types.EventType;
 import core.common.exceptions.EntityNotFound;
 import core.networking.events.types.incoming.RemoveEntityIncomingEventType;
-import java.util.function.Consumer;
 
-public class RemoveEntityIncomingConsumerClient implements Consumer<EventType> {
+public class RemoveEntityIncomingConsumerClient implements MyConsumer<EventType> {
 
   @Inject GameController gameController;
 

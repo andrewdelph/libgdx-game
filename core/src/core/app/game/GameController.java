@@ -1,6 +1,9 @@
 package core.app.game;
 
 import com.badlogic.gdx.math.Vector2;
+import com.google.common.base.Optional;
+import com.google.common.base.Predicate;
+import com.google.common.collect.Collections2;
 import com.google.inject.Inject;
 import core.app.user.User;
 import core.chunk.ChunkFactory;
@@ -14,6 +17,7 @@ import core.common.events.EventService;
 import core.common.events.types.ItemActionEventType;
 import core.common.exceptions.ChunkNotFound;
 import core.common.exceptions.EntityNotFound;
+import core.common.javautil.MyConsumer;
 import core.entity.ActiveEntityManager;
 import core.entity.Entity;
 import core.entity.EntityFactory;
@@ -40,10 +44,9 @@ import core.entity.misc.water.Water;
 import core.entity.misc.water.WaterPosition;
 import core.networking.events.EventTypeFactory;
 import core.networking.events.types.outgoing.CreateEntityOutgoingEventType;
-import java.util.Optional;
+import java.util.Collection;
 import java.util.Set;
 import java.util.UUID;
-import java.util.function.Consumer;
 
 public class GameController {
 
@@ -100,7 +103,7 @@ public class GameController {
     return this.createEntity(coordinates, null);
   }
 
-  public Entity createEntity(Coordinates coordinates, Consumer<Entity> consumer)
+  public Entity createEntity(Coordinates coordinates, MyConsumer<Entity> consumer)
       throws ChunkNotFound {
     Entity entity = entityFactory.createEntity(coordinates);
     if (consumer != null) {
@@ -187,7 +190,9 @@ public class GameController {
     } catch (EntityNotFound e) {
       this.createDirtBlock(coordinates);
     }
-    if (this.gameStore.getLadder(coordinates) != null) return this.gameStore.getLadder(coordinates);
+    if (this.gameStore.getLadder(coordinates) != null) {
+      return this.gameStore.getLadder(coordinates);
+    }
     Entity entity = entityFactory.createLadder(coordinates);
     this.gameStore.addEntity(entity);
     CreateEntityOutgoingEventType createEntityOutgoingEvent =
@@ -236,7 +241,9 @@ public class GameController {
     } catch (EntityNotFound e) {
     }
 
-    if (this.gameStore.getTurret(coordinates) != null) return this.gameStore.getTurret(coordinates);
+    if (this.gameStore.getTurret(coordinates) != null) {
+      return this.gameStore.getTurret(coordinates);
+    }
 
     synchronized (entity.getBag()) {
       int orbIndex;
@@ -310,8 +317,18 @@ public class GameController {
       return;
     }
 
-    removeBlock =
-        (Block) (rayCastSet.stream().filter(e -> e instanceof SolidBlock).findAny()).orElse(null);
+    // from the set... get a block which is instanceof SolidBlock
+    Collection<Entity> filteredRayCastSet =
+        Collections2.filter(
+            rayCastSet,
+            new Predicate<Entity>() {
+              @Override
+              public boolean apply(Entity input) {
+                return input instanceof SolidBlock;
+              }
+            });
+
+    removeBlock = (Block) filteredRayCastSet.iterator().next();
 
     Block replacementBlock = null;
     targetCoordinates =
@@ -329,7 +346,7 @@ public class GameController {
       } else {
       }
     }
-    this.replaceBlock(Optional.ofNullable(removeBlock), Optional.ofNullable(replacementBlock));
+    this.replaceBlock(Optional.fromNullable(removeBlock), Optional.fromNullable(replacementBlock));
   }
 
   public void replaceBlock(Optional<Block> toRemove, Optional<Block> toAdd) {
@@ -387,7 +404,9 @@ public class GameController {
   public Entity triggerReplaceEntity(UUID target, Entity replacementEntity, Boolean swapVelocity)
       throws EntityNotFound, ChunkNotFound, BodyNotFound, DestroyBodyException {
 
-    if (replacementEntity == null) return null;
+    if (replacementEntity == null) {
+      return null;
+    }
 
     Vector2 velocity = null;
     Entity removeEntity = this.gameStore.getEntity(target);

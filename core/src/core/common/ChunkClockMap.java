@@ -1,12 +1,14 @@
 package core.common;
 
+import com.google.common.base.Predicate;
+import com.google.common.collect.Collections2;
 import com.google.inject.Inject;
 import core.chunk.Chunk;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.stream.Collectors;
+import org.checkerframework.checker.nullness.compatqual.NullableDecl;
 
 public class ChunkClockMap {
 
@@ -39,11 +41,18 @@ public class ChunkClockMap {
     return this.map.keySet();
   }
 
-  Set<Chunk> getChunksOnTick(Tick tick) {
+  Set<Chunk> getChunksOnTick(final Tick tick) {
+
     Set<Chunk> onMyTick =
-        this.map.values().stream()
-            .filter(chunk -> chunk.updateTick.time == tick.time)
-            .collect(Collectors.toSet());
+        new HashSet<Chunk>(
+            Collections2.filter(
+                map.values(),
+                new Predicate<Chunk>() {
+                  @Override
+                  public boolean apply(@NullableDecl Chunk input) {
+                    return input != null && input.updateTick.time == tick.time;
+                  }
+                }));
 
     Set<Chunk> surroundingChunks = new HashSet<>();
 

@@ -40,10 +40,10 @@ import core.networking.translation.NetworkDataSerializer;
 import java.util.HashMap;
 import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
-import java.util.function.Consumer;
 import networking.NetworkObjects;
 
 public class Entity implements SerializeNetworkData {
+
   public static float staticHeight = 0.8f;
   public static float staticWidth = 0.8f;
   private final Clock clock;
@@ -146,7 +146,9 @@ public class Entity implements SerializeNetworkData {
 
   public Chunk getChunk() throws ChunkNotFound {
     Chunk toReturn = chunk;
-    if (toReturn == null) throw new ChunkNotFound(this.toString());
+    if (toReturn == null) {
+      throw new ChunkNotFound(this.toString());
+    }
     return toReturn;
   }
 
@@ -250,7 +252,7 @@ public class Entity implements SerializeNetworkData {
     getChunk().getWorldWrapper().setPosition(this, position);
   }
 
-  public void applyBody(Consumer<Body> applyFunction) throws ChunkNotFound, BodyNotFound {
+  public void applyBody(MyConsumer<Body> applyFunction) throws ChunkNotFound, BodyNotFound {
     getChunk().getWorldWrapper().applyBody(this, applyFunction);
   }
 

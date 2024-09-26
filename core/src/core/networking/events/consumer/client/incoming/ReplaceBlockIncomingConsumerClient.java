@@ -11,9 +11,8 @@ import core.common.exceptions.ChunkNotFound;
 import core.common.exceptions.EntityNotFound;
 import core.networking.client.ClientNetworkHandle;
 import core.networking.events.types.incoming.ReplaceBlockIncomingEventType;
-import java.util.function.Consumer;
 
-public class ReplaceBlockIncomingConsumerClient implements Consumer<EventType> {
+public class ReplaceBlockIncomingConsumerClient implements MyConsumer<EventType> {
 
   @Inject GameController gameController;
   @Inject ClientNetworkHandle clientNetworkHandle;

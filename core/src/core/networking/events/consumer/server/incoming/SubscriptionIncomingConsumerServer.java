@@ -8,11 +8,10 @@ import core.generation.ChunkGenerationService;
 import core.networking.events.types.incoming.SubscriptionIncomingEventType;
 import java.util.List;
 import java.util.Set;
-import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-public class SubscriptionIncomingConsumerServer implements Consumer<EventType> {
+public class SubscriptionIncomingConsumerServer implements MyConsumer<EventType> {
 
   @Inject ActiveChunkManager activeChunkManager;
   @Inject ChunkGenerationService chunkGenerationService;

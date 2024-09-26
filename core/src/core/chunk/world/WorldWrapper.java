@@ -8,13 +8,14 @@ import core.chunk.world.exceptions.BodyNotFound;
 import core.chunk.world.exceptions.DestroyBodyException;
 import core.common.ChunkRange;
 import core.common.GameSettings;
+import core.common.javautil.MyConsumer;
 import core.entity.Entity;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
-import java.util.function.Consumer;
 
 public class WorldWrapper {
+
   private final World world = new World(new Vector2(0, -GameSettings.GRAVITY), false);
   private final Map<UUID, Body> uuidBodyMap = new HashMap<>();
   private final ChunkRange chunkRange;
@@ -32,11 +33,13 @@ public class WorldWrapper {
 
   public synchronized void addEntity(CreateBodyCallable createBodyCallable) {
     Pair<UUID, Body> pair = createBodyCallable.addWorld(world);
-    if (pair == null) return;
+    if (pair == null) {
+      return;
+    }
     uuidBodyMap.put(pair.fst, pair.snd);
   }
 
-  public synchronized void applyWorld(Consumer<World> worldConsumer) {
+  public synchronized void applyWorld(MyConsumer<World> worldConsumer) {
     worldConsumer.accept(this.world);
   }
 
@@ -51,7 +54,7 @@ public class WorldWrapper {
     }
   }
 
-  public synchronized void applyBody(Entity entity, Consumer<Body> consumer) throws BodyNotFound {
+  public synchronized void applyBody(Entity entity, MyConsumer<Body> consumer) throws BodyNotFound {
     consumer.accept(getBody(entity));
   }
 
@@ -84,8 +87,9 @@ public class WorldWrapper {
   }
 
   private synchronized Body getBody(Entity entity) throws BodyNotFound {
-    if (uuidBodyMap.get(entity.getUuid()) == null)
+    if (uuidBodyMap.get(entity.getUuid()) == null) {
       throw new BodyNotFound("Body not found for entity: " + entity.getUuid());
+    }
     return uuidBodyMap.get(entity.getUuid());
   }
 }

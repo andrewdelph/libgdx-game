@@ -6,9 +6,9 @@ import core.chunk.ActiveChunkManager;
 import core.common.events.types.EventType;
 import core.networking.events.types.outgoing.RemoveEntityOutgoingEventType;
 import core.networking.server.ServerNetworkHandle;
-import java.util.function.Consumer;
 
-public class RemoveEntityOutgoingConsumerServer implements Consumer<EventType> {
+public class RemoveEntityOutgoingConsumerServer implements MyConsumer<EventType> {
+
   @Inject ActiveChunkManager activeChunkManager;
   @Inject ServerNetworkHandle serverNetworkHandle;
 

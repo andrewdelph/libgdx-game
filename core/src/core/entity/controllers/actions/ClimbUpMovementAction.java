@@ -6,9 +6,9 @@ import core.chunk.world.exceptions.BodyNotFound;
 import core.common.exceptions.ChunkNotFound;
 import core.entity.Entity;
 import core.entity.collision.ladder.EntityLadderContact;
-import java.util.function.Consumer;
 
 public class ClimbUpMovementAction implements EntityAction {
+
   EntityLadderContact entityLadderContact;
 
   public ClimbUpMovementAction(EntityLadderContact entityLadderContact) {
@@ -21,7 +21,7 @@ public class ClimbUpMovementAction implements EntityAction {
   }
 
   @Override
-  public Consumer<Body> applyBodyConsumer() {
+  public MyConsumer<Body> applyBodyConsumer() {
     return (body) -> {
       float x = body.getLinearVelocity().x;
       body.setLinearVelocity(new Vector2(x, 5));

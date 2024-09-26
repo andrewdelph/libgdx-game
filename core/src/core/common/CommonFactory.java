@@ -4,12 +4,13 @@ import com.badlogic.gdx.Gdx;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
-import com.sun.tools.javac.util.Pair;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import networking.NetworkObjects;
+import org.javatuples.Pair;
 
 public class CommonFactory {
+
   static LoadingCache<Pair<Float, Float>, Coordinates> coordinatesCache =
       CacheBuilder.newBuilder()
           .maximumSize(1000)
@@ -17,7 +18,7 @@ public class CommonFactory {
           .build(
               new CacheLoader<Pair<Float, Float>, Coordinates>() {
                 public Coordinates load(Pair<Float, Float> pair) {
-                  return new Coordinates(pair.fst, pair.snd);
+                  return new Coordinates(pair.getValue0(), pair.getValue1());
                 }
               });
 

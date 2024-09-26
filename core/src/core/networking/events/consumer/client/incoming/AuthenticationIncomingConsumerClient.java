@@ -5,9 +5,8 @@ import core.common.events.types.EventType;
 import core.networking.ConnectionStore;
 import core.networking.client.ClientNetworkHandle;
 import core.networking.events.types.incoming.AuthenticationIncomingEventType;
-import java.util.function.Consumer;
 
-public class AuthenticationIncomingConsumerClient implements Consumer<EventType> {
+public class AuthenticationIncomingConsumerClient implements MyConsumer<EventType> {
 
   @Inject ClientNetworkHandle clientNetworkHandle;
 

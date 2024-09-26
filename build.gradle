@@ -10,6 +10,7 @@ buildscript {
     dependencies {
         classpath 'com.android.tools.build:gradle:4.0.2'
         classpath 'com.google.protobuf:protobuf-gradle-plugin:0.8.18'
+        classpath 'com.mobidevelop.robovm:robovm-gradle-plugin:2.3.16'
     }
 }
 
@@ -86,7 +87,7 @@ allprojects {
     ext {
         appName = "my-gdx-game"
         gdxVersion = '1.9.12'
-        roboVMVersion = '2.3.11'
+        roboVMVersion = '2.3.16'
         box2DLightsVersion = '1.5'
         ashleyVersion = '1.7.3'
         aiVersion = '1.8.2'
@@ -117,7 +118,9 @@ project(":core") {
         implementation "io.grpc:grpc-services:1.32.1"
         implementation 'org.apache.tomcat:annotations-api:6.0.53'
         implementation 'com.google.inject:guice:4.0:no_aop'
-        implementation "com.google.guava:guava:31.1-jre"
+        implementation "com.google.guava:guava:20.1-jre"
+
+        implementation "org.javatuples:javatuples:1.2"
 
         testImplementation 'org.hamcrest:hamcrest-library:2.1'
         testImplementation "org.mockito:mockito-all:1.9.5"
@@ -158,6 +161,37 @@ project(":core") {
                 grpc {}
             }
         }
+    }
+}
+
+project(":ios") {
+    apply plugin: "java-library"
+    apply plugin: "robovm"
+
+    dependencies {
+        implementation project(":core")
+        api "com.mobidevelop.robovm:robovm-rt:$roboVMVersion"
+        api "com.mobidevelop.robovm:robovm-cocoatouch:$roboVMVersion"
+        api "com.badlogicgames.gdx:gdx-backend-robovm:$gdxVersion"
+        api "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-ios"
+
+        implementation 'com.google.inject:guice:4.0:no_aop'
+        implementation "org.javatuples:javatuples:1.2"
+
+//        testImplementation "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-ios"
+
+//        natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-ios"
+//        natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-armeabi-v7a"
+//        natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-arm64-v8a"
+//        natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-x86"
+//        natives "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-x86_64"
+//        api "com.badlogicgames.gdx:gdx-box2d:$gdxVersion"
+//        natives "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-armeabi"
+//        natives "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-armeabi-v7a"
+//        natives "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-arm64-v8a"
+//        natives "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-x86"
+//        natives "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-x86_64"
+
     }
 }
 

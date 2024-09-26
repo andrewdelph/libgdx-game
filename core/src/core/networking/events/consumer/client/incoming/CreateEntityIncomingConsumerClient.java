@@ -12,9 +12,8 @@ import core.entity.Entity;
 import core.entity.controllers.factories.EntityControllerFactory;
 import core.networking.events.types.incoming.CreateEntityIncomingEventType;
 import core.networking.translation.NetworkDataDeserializer;
-import java.util.function.Consumer;
 
-public class CreateEntityIncomingConsumerClient implements Consumer<EventType> {
+public class CreateEntityIncomingConsumerClient implements MyConsumer<EventType> {
 
   @Inject GameController gameController;
   @Inject NetworkDataDeserializer entitySerializationConverter;

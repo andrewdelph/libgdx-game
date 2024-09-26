@@ -16,10 +16,9 @@ import core.networking.events.types.incoming.DisconnectionIncomingEventType;
 import core.networking.events.types.outgoing.RemoveEntityOutgoingEventType;
 import core.networking.server.ServerNetworkHandle;
 import java.util.UUID;
-import java.util.function.Consumer;
 import java.util.logging.Logger;
 
-public class DisconnectionIncomingConsumerServer implements Consumer<EventType> {
+public class DisconnectionIncomingConsumerServer implements MyConsumer<EventType> {
 
   private static final Logger LOGGER = Logger.getLogger(GameStore.class.getName());
   @Inject EventService eventService;

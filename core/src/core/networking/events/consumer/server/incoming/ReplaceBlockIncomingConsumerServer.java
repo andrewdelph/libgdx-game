@@ -15,9 +15,8 @@ import core.networking.events.EventTypeFactory;
 import core.networking.events.types.incoming.ReplaceBlockIncomingEventType;
 import core.networking.events.types.outgoing.ReplaceBlockOutgoingEventType;
 import core.networking.server.ServerNetworkHandle;
-import java.util.function.Consumer;
 
-public class ReplaceBlockIncomingConsumerServer implements Consumer<EventType> {
+public class ReplaceBlockIncomingConsumerServer implements MyConsumer<EventType> {
 
   @Inject ActiveChunkManager activeChunkManager;
   @Inject ServerNetworkHandle serverNetworkHandle;
@@ -39,7 +38,9 @@ public class ReplaceBlockIncomingConsumerServer implements Consumer<EventType> {
         EventTypeFactory.createReplaceBlockOutgoingEvent(
             incoming.getTarget(), incoming.getReplacementBlock(), incoming.getChunkRange());
     for (UserID userID : activeChunkManager.getChunkRangeUsers(incoming.getChunkRange())) {
-      if (incoming.getUserID().equals(userID)) continue;
+      if (incoming.getUserID().equals(userID)) {
+        continue;
+      }
       serverNetworkHandle.send(userID, outgoing.toNetworkEvent());
     }
   }

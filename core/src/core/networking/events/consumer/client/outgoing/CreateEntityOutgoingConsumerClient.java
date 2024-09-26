@@ -4,9 +4,8 @@ import com.google.inject.Inject;
 import core.common.events.types.EventType;
 import core.networking.client.ClientNetworkHandle;
 import core.networking.events.types.outgoing.CreateEntityOutgoingEventType;
-import java.util.function.Consumer;
 
-public class CreateEntityOutgoingConsumerClient implements Consumer<EventType> {
+public class CreateEntityOutgoingConsumerClient implements MyConsumer<EventType> {
 
   @Inject ClientNetworkHandle clientNetworkHandle;
 

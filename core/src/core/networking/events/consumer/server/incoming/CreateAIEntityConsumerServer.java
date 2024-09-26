@@ -7,9 +7,8 @@ import core.common.events.types.EventType;
 import core.common.exceptions.ChunkNotFound;
 import core.common.exceptions.EntityNotFound;
 import core.entity.AIManager;
-import java.util.function.Consumer;
 
-public class CreateAIEntityConsumerServer implements Consumer<EventType> {
+public class CreateAIEntityConsumerServer implements MyConsumer<EventType> {
 
   @Inject User user;
   @Inject AIManager aiManager;

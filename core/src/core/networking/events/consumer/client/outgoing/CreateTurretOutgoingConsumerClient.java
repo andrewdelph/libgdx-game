@@ -4,9 +4,8 @@ import com.google.inject.Inject;
 import core.common.events.types.CreateTurretEventType;
 import core.common.events.types.EventType;
 import core.networking.client.ClientNetworkHandle;
-import java.util.function.Consumer;
 
-public class CreateTurretOutgoingConsumerClient implements Consumer<EventType> {
+public class CreateTurretOutgoingConsumerClient implements MyConsumer<EventType> {
 
   @Inject ClientNetworkHandle clientNetworkHandle;
 

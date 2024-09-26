@@ -5,9 +5,8 @@ import core.common.Clock;
 import core.common.events.types.EventType;
 import core.networking.events.types.incoming.PingResponseIncomingEventType;
 import core.networking.ping.PingService;
-import java.util.function.Consumer;
 
-public class PingResponseIncomingConsumerServer implements Consumer<EventType> {
+public class PingResponseIncomingConsumerServer implements MyConsumer<EventType> {
 
   @Inject PingService pingService;
 

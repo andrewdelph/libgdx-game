@@ -4,9 +4,9 @@ import com.google.inject.Inject;
 import core.common.events.types.EventType;
 import core.networking.client.ClientNetworkHandle;
 import core.networking.events.types.outgoing.HandshakeOutgoingEventType;
-import java.util.function.Consumer;
 
-public class HandshakeOutgoingConsumerClient implements Consumer<EventType> {
+public class HandshakeOutgoingConsumerClient implements MyConsumer<EventType> {
+
   @Inject ClientNetworkHandle clientNetworkHandle;
 
   @Override

@@ -4,9 +4,8 @@ import com.google.inject.Inject;
 import core.common.events.types.CreateAIEntityEventType;
 import core.common.events.types.EventType;
 import core.networking.client.ClientNetworkHandle;
-import java.util.function.Consumer;
 
-public class CreateAIEntityConsumerClient implements Consumer<EventType> {
+public class CreateAIEntityConsumerClient implements MyConsumer<EventType> {
 
   @Inject ClientNetworkHandle clientNetworkHandle;
 

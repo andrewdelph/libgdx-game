@@ -13,9 +13,8 @@ import core.networking.events.EventTypeFactory;
 import core.networking.events.types.incoming.RemoveEntityIncomingEventType;
 import core.networking.events.types.outgoing.RemoveEntityOutgoingEventType;
 import core.networking.server.ServerNetworkHandle;
-import java.util.function.Consumer;
 
-public class RemoveEntityIncomingConsumerServer implements Consumer<EventType> {
+public class RemoveEntityIncomingConsumerServer implements MyConsumer<EventType> {
 
   @Inject GameController gameController;
   @Inject ServerNetworkHandle serverNetworkHandle;
@@ -40,7 +39,9 @@ public class RemoveEntityIncomingConsumerServer implements Consumer<EventType> {
             incoming.getTarget(), incoming.getChunkRange());
 
     for (UserID userID : activeChunkManager.getChunkRangeUsers(incoming.getChunkRange())) {
-      if (userID.equals(incoming.getUserID())) continue;
+      if (userID.equals(incoming.getUserID())) {
+        continue;
+      }
       serverNetworkHandle.send(userID, outgoing.toNetworkEvent());
     }
   }

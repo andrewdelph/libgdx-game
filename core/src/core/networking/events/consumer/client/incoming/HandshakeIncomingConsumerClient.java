@@ -17,9 +17,8 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
-import java.util.function.Consumer;
 
-public class HandshakeIncomingConsumerClient implements Consumer<EventType> {
+public class HandshakeIncomingConsumerClient implements MyConsumer<EventType> {
 
   @Inject GameStore gameStore;
   @Inject EventService eventService;
@@ -56,8 +55,9 @@ public class HandshakeIncomingConsumerClient implements Consumer<EventType> {
     }
 
     // request the missing
-    if (missing.size() > 0)
+    if (missing.size() > 0) {
       eventService.fireEvent(
           EventTypeFactory.createHandshakeOutgoingEventType(chunkRange, missing));
+    }
   }
 }
